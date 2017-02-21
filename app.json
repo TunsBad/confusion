@@ -1,0 +1,5 @@
+{
+	"name": "Restaurant conFusion",
+	"description": "An application for a culinary restaurant",
+	"keywords": ["Mongo", "Express", "Angular", "Node"]
+}
