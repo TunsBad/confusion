@@ -12,6 +12,10 @@ var cors = require('cors');
 var config = require('./config');
 var Verify = require('./routes/verify');
 
+var app = express();
+
+app.set('port', (process.env.PORT || 5000));
+
 mongoose.connect(config.mongoUrl);
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
@@ -27,19 +31,7 @@ var promoRouter = require('./routes/promoRouter');
 var leaderRouter = require('./routes/leaderRouter');
 var favoriteRouter = require('./routes/favoriteRouter');
 
-var app = express();
-
 app.use(cors());
-
-// Secure traffic only
-app.all('*', function(req, res, next){
-    console.log('req start: ',req.secure, req.hostname, req.url, app.get('port'));
-    if (req.secure) {
-        return next();
-    };
-
-    res.redirect('https://'+req.hostname+':'+app.get('secPort')+req.url);
-});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -55,7 +47,7 @@ app.use(cookieParser());
 // passport config
 app.use(passport.initialize());
 
-app.use(express.static(path.join(__dirname, 'conFusion-Angular/app')));
+app.use(express.static(path.join(__dirname, 'app')));
 
 app.use('/', routes);
 app.use('/users', users);
@@ -95,5 +87,6 @@ app.use(function(err, req, res, next) {
   });
 });
 
-
-module.exports = app;
+app.listen(app.get('port'), function() {
+  console.log('The restaurant app is running on port', app.get('port'));
+});
